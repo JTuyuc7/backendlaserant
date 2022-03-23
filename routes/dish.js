@@ -2,19 +2,23 @@ const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
 const dishController = require('../controllers/dishController');
+const checkAuth = require('../middleware/checkAuth');
 
 // Get all the projects
 router.get("/",
+    checkAuth,
     dishController.getAllDishes
 );
 
 // Get an especific dish
 router.get('/:id',
-    dishController.getDihs
+    checkAuth,
+    dishController.getDish
 );
 
 // Add new Dish
-router.post('/', 
+router.post('/',
+    checkAuth,
     [
         check('name', 'Name is required to add a dish').not().isEmpty(),
         check('price', 'Please add a valid price').isNumeric(),
@@ -28,6 +32,7 @@ router.post('/',
 
 // Update a dish
 router.put('/:id',
+    checkAuth,
     [
         check('name', 'Name is required to add a dish').not().isEmpty(),
         check('price', 'Please add a valid price').isNumeric(),
@@ -41,6 +46,7 @@ router.put('/:id',
 
 // Delete a Dish
 router.delete('/:id', 
+    checkAuth,
     dishController.deleteDish
 );
 

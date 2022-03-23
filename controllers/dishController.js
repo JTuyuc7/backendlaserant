@@ -13,7 +13,8 @@ const getErrors = (req, res) => {
 // Get all dishes
 exports.getAllDishes = async (req, res) => {
     try {
-        const dishes = await Dish.find().sort({ creado: -1});
+        const dishes = await Dish.find({ creator: req.user.id}).sort({ creado: -1});
+        //const dishes = await Dish.find().where('creator').equals(req.user.id);
         res.status(200);
         res.json({dishes})
     } catch (error) {
@@ -23,11 +24,15 @@ exports.getAllDishes = async (req, res) => {
 };
 
 // Get an especific dish for ID
-exports.getDihs = async (req, res) => {
-    
+exports.getDish = async (req, res) => {
+    const userId = req.user.id;
     try {
         const id = req.params.id;
         const dish = await Dish.findById({ _id: id });
+
+        if( dish.creator.toString() !== userId.toString()){
+            return res.status(401).json({ msg: 'insufficient permissions'})
+        }
         res.status(200);
         res.json({dish})
     } catch (error) {
@@ -42,6 +47,7 @@ exports.addNewDish = async (req, res) => {
     // Add the dish to DB
     try {
         const dish = new Dish(req.body);
+        dish.creator = req.user.id;
         dish.save();
         res.status(200);
         res.json({ msg: 'Added correctly', dish });
@@ -55,13 +61,19 @@ exports.editDish = async (req, res) => {
 
     getErrors(req, res);
     const { name, price, quantity, category, img, description } = req.body;
+    const userId = req.user.id;
+    
     try {
         // Get the id from the params
         const id = req.params.id;
         // Dish from DB
         let dishFound = await Dish.findById({ _id: id});
         if(!dishFound){
-            res.status(404).json({ msg: 'Project was not founded'})
+            return res.status(404).json({ msg: 'Project was not founded'})
+        }
+    
+        if( dishFound.creator.toString() !== userId.toString() ){
+            return res.status(404).json({ msg: 'Insufficient permissions to make this action'})
         }
 
         const dish = {};
@@ -71,9 +83,10 @@ exports.editDish = async (req, res) => {
         dish.category = category || dishFound.category;
         dish.img = img || dishFound.img;
         dish.description = description || dishFound.description;
-
+        dish.creator = dishFound.creator;
         dishFound = await Dish.findByIdAndUpdate({ _id: id}, { $set: dish}, { new: true});
-        res.json({dish})
+        res.status(200);
+        res.json({dish});
 
     } catch (error) {
         console.log(error);
@@ -84,10 +97,16 @@ exports.editDish = async (req, res) => {
 // Delete a dish
 exports.deleteDish = async (req, res) => {
 
+    const userId = req.user.id;
     try {
         const dish = await Dish.findById({ _id: req.params.id });
-        //console.log(dish, 'was not found')
-        
+        if(!dish){
+            return res.status(404).json({ msg: 'Dish was not founded'})
+        }
+
+        if( dish.creator.toString() !== userId.toString()){
+            return res.status(401).json({  msg: 'Insufficient permissions to make this action' })
+        }
         await Dish.findOneAndRemove({ _id: req.params.id });
         res.json({ msg: 'Deleted successfully'});
         
