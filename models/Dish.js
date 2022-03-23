@@ -28,6 +28,10 @@ const DishSchema = mongoose.Schema({
         required: true,
         trim: true,
     },
+    creator: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     creado: {
         type: Date,
         default: Date.now()
