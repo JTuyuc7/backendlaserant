@@ -29,7 +29,6 @@ exports.authenticateUser = async (req, res, next) => {
         if(!correctPass){
             return res.status(400).json({ msg: 'Incorrect password'})
         }
-
         const payload = {
             user : {
                 id: user.id,
@@ -45,7 +44,7 @@ exports.authenticateUser = async (req, res, next) => {
         userData.id = user._id
         // Firmar el token y dejar fecha de expiracion
         jwt.sign(payload, process.env.PALABRA_SECRETA, {
-            expiresIn: 18000 // 1 hora
+            expiresIn: 3600 // 1 hora
         }, (error, token) => {
             if(error) throw error;
             res.json({ token: token, msg: 'Logged in successfully', user: userData })

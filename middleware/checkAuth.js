@@ -12,14 +12,13 @@ const checkAuth = async (req, res, next) => {
 
             //const decoded = jwt.decode(token);
             const decoded = jwt.verify(token, process.env.PALABRA_SECRETA);
-            //console.log(decoded.user.id, 'leyendo usuario')
             let id = decoded.user.id;
             req.user = await User.findById({_id: id}).select('-password -authenticated -token -__v -created')
             
             return next();
         } catch (error) {
             console.log(error)
-            return res.status(404).json({msg: 'User does not have permission'})
+            return res.status(404).json({msg: 'Please log in again'})
         }
     }
 
