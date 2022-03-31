@@ -4,13 +4,12 @@ const User = require('../models/User');
 const checkAuth = async (req, res, next) => {
     
     let token;
-    // validar que exista un token en los headers
+
     if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
         
         try {
             token = req.headers.authorization.split(' ')[1];
 
-            //const decoded = jwt.decode(token);
             const decoded = jwt.verify(token, process.env.PALABRA_SECRETA);
             let id = decoded.user.id;
             req.user = await User.findById({_id: id}).select('-password -authenticated -token -__v -created')

@@ -1,6 +1,3 @@
-# Crear el servidor
-- Instalar Express
-- Instalar nodemon
 
 # Iniciar backend
-- npm run dev
+- npm run dev  en modo desarrollo

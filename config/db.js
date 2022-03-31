@@ -6,8 +6,6 @@ const connectDB = async () => {
         const connection = await mongoose.connect(process.env.MONGO_DB_CONNECTION, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-            //useFindAndModify: false,
-            //useCreateIndex: true
         });
         
         const url = `${connection.connection.host}_ ${connection.connection.port}`;

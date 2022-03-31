@@ -9,7 +9,6 @@ exports.confirmAccount = async (req, res) => {
             return res.status(404).json({msg: 'Invalid token provided'})
         }
 
-        // Usuario encotrado por token cambiar el estado de autenticado a true
         user.authenticated = true;
         user.token = '';
 

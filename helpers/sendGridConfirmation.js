@@ -7,7 +7,7 @@ const sendConfirmation = async (datos) => {
     const msg = {
         to: email,
         from: 'userProjectTest@gmail.com',
-        subject: `${firstName}, Confirm Account`,
+        subject: `${firstName}, Confirm your Account`,
         text: 'Confirm your account',
         html: `
             <p>Hi, ${firstName}, just one step to verify your account </p>
@@ -21,7 +21,7 @@ const sendConfirmation = async (datos) => {
     }
     
     sgMail.send(msg)
-        .then((response) => console.log(response.body))
+        .then((response) => console.log(response.body, 'Email sent '))
         .catch((err) => console.log(err.response))
 }
 
