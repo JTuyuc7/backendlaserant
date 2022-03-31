@@ -19,7 +19,7 @@ const resetPasswordGrid = async (datos) => {
     }
     
     sgMail.send(msg)
-        .then((response) => console.log(response.body))
+        .then((response) => console.log(response.body, ' email sent'))
         .catch((err) => console.log(err.response))
 }
 

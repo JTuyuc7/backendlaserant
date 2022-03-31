@@ -4,19 +4,16 @@ const { check } = require('express-validator');
 const dishController = require('../controllers/dishController');
 const checkAuth = require('../middleware/checkAuth');
 
-// Get all the projects
 router.get("/",
     checkAuth,
     dishController.getAllDishes
 );
 
-// Get an especific dish
 router.get('/:id',
     checkAuth,
     dishController.getDish
 );
 
-// Add new Dish
 router.post('/',
     checkAuth,
     [
@@ -30,7 +27,6 @@ router.post('/',
     dishController.addNewDish
 );
 
-// Update a dish
 router.put('/:id',
     checkAuth,
     [
@@ -44,12 +40,9 @@ router.put('/:id',
     dishController.editDish
 );
 
-// Delete a Dish
 router.delete('/:id', 
     checkAuth,
     dishController.deleteDish
 );
-
-//Clitus show
 
 module.exports = router;

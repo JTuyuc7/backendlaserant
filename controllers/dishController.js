@@ -2,7 +2,6 @@
 const Dish = require('../models/Dish');
 const { validationResult } = require('express-validator');
 
-// Function errors
 const getErrors = (req, res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
@@ -10,7 +9,6 @@ const getErrors = (req, res) => {
     }
 }
 
-// Get all dishes
 exports.getAllDishes = async (req, res) => {
     try {
         const dishes = await Dish.find({ creator: req.user.id}).sort({ creado: -1});
@@ -23,7 +21,6 @@ exports.getAllDishes = async (req, res) => {
     }
 };
 
-// Get an especific dish for ID
 exports.getDish = async (req, res) => {
     const userId = req.user.id;
     try {
@@ -44,7 +41,7 @@ exports.getDish = async (req, res) => {
 
 exports.addNewDish = async (req, res) => {
     getErrors(req, res);
-    // Add the dish to DB
+
     try {
         const dish = new Dish(req.body);
         dish.creator = req.user.id;
@@ -64,9 +61,7 @@ exports.editDish = async (req, res) => {
     const userId = req.user.id;
     
     try {
-        // Get the id from the params
         const id = req.params.id;
-        // Dish from DB
         let dishFound = await Dish.findById({ _id: id});
         if(!dishFound){
             return res.status(404).json({ msg: 'Project was not founded'})
@@ -94,7 +89,6 @@ exports.editDish = async (req, res) => {
     }
 }
 
-// Delete a dish
 exports.deleteDish = async (req, res) => {
 
     const userId = req.user.id;

@@ -2,7 +2,6 @@ const User = require('../models/User');
 const { validationResult } = require('express-validator');
 const genereateId = require('../helpers/GenerateId');
 const bcryptjs = require('bcryptjs');
-const emailResetPassword = require('../helpers/emailReset');
 const resetPasswordGrid = require('../helpers/resetSengridPass');
 
 exports.forgotPssword = async (req, res) => {
@@ -16,19 +15,11 @@ exports.forgotPssword = async (req, res) => {
     try {
         const user = await User.findOne({ email });
         if(!user){
-            return res.status(404).json({msg: 'User with the provided email does not exist'})
+            return res.status(404).json({msg: 'Incorrect information'})
         }
 
-        // if the user is founded
-        // create a new token
         user.token = genereateId()
         await user.save();
-        // emailResetPassword({
-        //     email: user.email,
-        //     firstName: user.firstName,
-        //     lastName: user.lastName,
-        //     token: user.token
-        // })
         resetPasswordGrid({
             email: user.email,
             firstName: user.firstName,
@@ -63,8 +54,7 @@ exports.resetPassword = async (req, res) => {
 }
 
 exports.changePassword = async (req,res) => {
-    
-    // Validar que se envie un nuevo password
+
     const errors = validationResult(req);
     if( !errors.isEmpty()){
         return res.status(400).json({ errors: errors.array()});
@@ -72,15 +62,12 @@ exports.changePassword = async (req,res) => {
     const token = req.params.token;
     const { password } = req.body;
     try {
-        // encontrar el usuario
         let user = await User.findOne({token})
         if(!user){
             return res.status(400).json({ msg: 'User not founded or invalid token'})
         }
 
-        // Hashear de nuevo el password
         const hashPassword = await bcryptjs.genSalt(10)
-        // guardar el nuevo password
         user.password = await bcryptjs.hash(password, hashPassword);
         user.token = '';
         await user.save();

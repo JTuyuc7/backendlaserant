@@ -20,26 +20,23 @@ const corsOptions = {
         }
     }
 }
-//app.use(cors(corsOptions))
-app.use(cors());
-// Habilitar la opcion de usar json para la lectura de datos
+app.use(cors(corsOptions))
+//app.use(cors());
+
 app.use(express.json({ extended: true }));
 
-// Import routes
 app.use('/api/create-account', require('./routes/users'));
 app.use('/api/login', require('./routes/auth'));
 app.use('/api/confirm-account', require('./routes/confirmAccount'));
 app.use('/api/reset-password', require('./routes/resetPassword'));
 
-//Ueer Profile
 app.use('/api/profile', checkAuth, require('./routes/userProfile'))
 
 app.use('/api/dishes', checkAuth, require('./routes/dish'));
 
-// Port
 const port = process.env.PORT || 4000;
 
-//Create the server
+
 app.listen( port, () => {
     console.log(`Server is running on port ${port}`);
 })
